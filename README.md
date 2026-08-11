@@ -35,6 +35,9 @@
   在线访问 / Online Access
 ----------------------------------------------------------------
 
+  在线直链 / Online URL:
+  https://hash-and-base64.pages.dev/
+
   本地使用（浏览器直接打开 index.html 即可）：
   Local usage (just open index.html in your browser):
   D:\Desktop\哈希与Base64工具\index.html
