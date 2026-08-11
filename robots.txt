@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://hash-and-base64.pages.dev/sitemap.xml
