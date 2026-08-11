@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>哈希 &amp; Base64 全能工具</title>
+<link rel="icon" type="image/x-icon" href="assets/favicon.ico">
+<link rel="apple-touch-icon" href="assets/favicon.png">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="app">
+  <header class="topbar">
+    <div class="brand">
+      <img src="assets/favicon.png" alt="logo" class="logo">
+      <h1>哈希 &amp; Base64 全能工具</h1>
+      <span class="ver">v1.0</span>
+    </div>
+    <nav class="main-nav">
+      <button class="nav-btn active" data-tool="hash">🔐 哈希计算</button>
+      <button class="nav-btn" data-tool="base64">🔤 Base64 编解码</button>
+    </nav>
+  </header>
+
+  <!-- ============ 哈希工具 ============ -->
+  <section id="tool-hash" class="panel active">
+    <div class="card">
+      <h2>文件选择</h2>
+      <div class="row">
+        <input type="text" id="hash-file-path" class="path-input" placeholder="选择要计算哈希的文件..." readonly>
+        <button class="btn" id="hash-browse">浏览文件</button>
+        <input type="file" id="hash-file-input" hidden>
+      </div>
+      <div class="row hint" id="hash-file-info"></div>
+    </div>
+
+    <div class="card">
+      <h2>哈希算法</h2>
+      <div class="algo-cats">
+        <div class="cat">
+          <div class="cat-title">🔐 加密型（安全）</div>
+          <div class="algo-grid" id="crypto-algos"></div>
+        </div>
+        <div class="cat">
+          <div class="cat-title">⚡ 非加密型（快速）</div>
+          <div class="algo-grid" id="noncrypto-algos"></div>
+        </div>
+        <div class="cat">
+          <div class="cat-title">🔍 特殊用途</div>
+          <div class="algo-grid" id="special-algos"></div>
+        </div>
+      </div>
+      <div class="current-algo" id="hash-current">当前算法：SHA-256</div>
+      <button class="btn primary" id="hash-calc">计算哈希值</button>
+    </div>
+
+    <div class="card">
+      <h2>计算结果</h2>
+      <textarea id="hash-result" class="result-area" readonly placeholder="哈希值将显示在这里"></textarea>
+      <div class="btn-row">
+        <button class="btn" id="hash-copy">📋 复制哈希值</button>
+        <button class="btn" id="hash-clear">清空结果</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>哈希对比</h2>
+      <input type="text" id="hash-expected" class="path-input" placeholder="输入期望的哈希值进行对比...">
+      <div class="btn-row">
+        <button class="btn" id="hash-compare">对比当前哈希</button>
+        <button class="btn ghost" id="hash-clearall">清空所有</button>
+      </div>
+      <div class="compare-result" id="hash-compare-result"></div>
+    </div>
+  </section>
+
+  <!-- ============ Base64 工具 ============ -->
+  <section id="tool-base64" class="panel">
+    <nav class="sub-nav">
+      <button class="sub-btn active" data-sub="file">📄 单文件</button>
+      <button class="sub-btn" data-sub="text">✏️ 文本</button>
+      <button class="sub-btn" data-sub="folder">📁 文件夹</button>
+    </nav>
+
+    <!-- 单文件 -->
+    <div class="sub-panel active" id="sub-file">
+      <div class="card">
+        <div class="row">
+          <label class="radio"><input type="radio" name="file-mode" value="encode" checked> 编码（文件 → Base64）</label>
+          <label class="radio"><input type="radio" name="file-mode" value="decode"> 解码（Base64 → 文件）</label>
+        </div>
+        <div class="row">
+          <input type="text" id="b64file-in" class="path-input" placeholder="输入文件 / Base64 文件路径" readonly>
+          <button class="btn" id="b64file-browse-in">浏览...</button>
+          <input type="file" id="b64file-input" hidden>
+        </div>
+        <div class="row">
+          <input type="text" id="b64file-out" class="path-input" placeholder="保存位置（编码输出 .b64 / 解码输出原文件）" readonly>
+          <button class="btn" id="b64file-browse-out">保存为...</button>
+        </div>
+        <div class="row" id="b64file-format-row">
+          <label class="radio"><input type="radio" name="file-format" value="standard" checked> 普通格式（兼容所有解码器）</label>
+          <label class="radio"><input type="radio" name="file-format" value="enhanced"> 增强格式（保存文件名，仅本工具还原）</label>
+        </div>
+        <div class="btn-row">
+          <button class="btn primary" id="b64file-encode">▶ 执行编码</button>
+          <button class="btn primary" id="b64file-decode">▶ 执行解码</button>
+        </div>
+        <div class="status" id="b64file-status">就绪</div>
+      </div>
+    </div>
+
+    <!-- 文本 -->
+    <div class="sub-panel" id="sub-text">
+      <div class="card">
+        <div class="row">
+          <label class="radio"><input type="radio" name="text-mode" value="encode" checked> 编码（文本 → Base64）</label>
+          <label class="radio"><input type="radio" name="text-mode" value="decode"> 解码（Base64 → 文本）</label>
+        </div>
+        <div class="split">
+          <div class="col">
+            <h3>输入</h3>
+            <textarea id="b64text-in" class="result-area tall" placeholder="输入文本或 Base64..."></textarea>
+          </div>
+          <div class="col">
+            <h3>输出</h3>
+            <textarea id="b64text-out" class="result-area tall" readonly placeholder="结果将显示在这里"></textarea>
+          </div>
+        </div>
+        <div class="btn-row">
+          <button class="btn primary" id="b64text-run">▶ 执行</button>
+          <button class="btn" id="b64text-copy">📋 复制结果</button>
+          <button class="btn ghost" id="b64text-clear">清空</button>
+        </div>
+        <div class="status" id="b64text-status">就绪</div>
+      </div>
+    </div>
+
+    <!-- 文件夹 -->
+    <div class="sub-panel" id="sub-folder">
+      <div class="card">
+        <div class="row">
+          <label class="radio"><input type="radio" name="folder-mode" value="encode" checked> 📁 文件夹 → Base64（批量编码）</label>
+          <label class="radio"><input type="radio" name="folder-mode" value="decode"> 📄 Base64 → 文件夹（批量解码）</label>
+        </div>
+        <div class="row">
+          <input type="text" id="b64folder-in" class="path-input" placeholder="编码：选择文件夹 | 解码：选择 .b64 文件" readonly>
+          <button class="btn" id="b64folder-browse-in">浏览...</button>
+          <input type="file" id="b64folder-input" webkitdirectory hidden>
+          <input type="file" id="b64folder-file" hidden>
+        </div>
+        <div class="btn-row">
+          <button class="btn primary" id="b64folder-run">▶ 执行操作</button>
+        </div>
+        <div class="status" id="b64folder-status">就绪</div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/hash-wasm@4.12.0/dist/index.umd.min.js"></script>
+<script src="js/hashlib.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
